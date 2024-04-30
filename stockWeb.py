@@ -5,6 +5,7 @@ import redis
 import pickle
 import streamlit as st
 import ssl
+import plotly.graph_objs as go
 
 # Define Redis connection parameters
 redis_url = "rediss://red-co8egigl5elc738tgqn0:HFzRb4hmIrjFUU12illslOXzCSR39WTQ@oregon-redis.render.com:6379"
@@ -20,7 +21,10 @@ def get_data(symbol):
         return pickle.loads(cached_data)
 
     # Download data
-    end_date = datetime.now().strftime('%Y-%m-%d')
+    current_date = datetime.now()
+
+# Add one day to the current date
+    end_date = (current_date + timedelta(days=1)).strftime('%Y-%m-%d')
     start_date = (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d')
     data = yf.download(symbol, start=start_date, end=end_date)
 
@@ -109,6 +113,27 @@ def main():
     # Display symbols in a table
     st.write("NIFTY 200 Stocks List:")
     st.write(df)
+    
+    st.sidebar.title("Filter Options")
+
+# Create a checkbox for each signal type
+    long_filter = st.sidebar.checkbox("Long")
+    short_filter = st.sidebar.checkbox("Short")
+    no_signal_filter = st.sidebar.checkbox("No Signal")
+
+    # Filter the DataFrame based on the selected options
+    filtered_df = df.copy()
+
+    if long_filter:
+        filtered_df = filtered_df[filtered_df['Signal'] == 'Long']
+    if short_filter:
+        filtered_df = filtered_df[filtered_df['Signal'] == 'Short']
+    if no_signal_filter:
+        filtered_df = filtered_df[filtered_df['Signal'] == 'No signal']
+
+    # Display the filtered DataFrame
+    st.write("Filtered Stocks List:")
+    st.write(filtered_df)
 
     # Text input for user input
     user_input = st.text_input("Enter a stock symbol (e.g., TCS.NS):")
@@ -120,6 +145,16 @@ def main():
         else:
             signal, color = check_signal(data)
             display_data(user_input, data, signal, color)
+            
+            st.subheader(f"Stock Data for {user_input}")
+            st.write(data)
+
+            # Plot the closing price
+            st.subheader("Closing Price Chart")
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close'))
+            fig.update_layout(title=f'{user_input} Closing Price', xaxis_title='Date', yaxis_title='Price')
+            st.plotly_chart(fig)
 
 if __name__ == "__main__":
     main()
