@@ -70,7 +70,7 @@ def display_data(symbol, data, signal, color):
 # Main function
 def main():
     st.warning("🚨 Get Latest Updated Signals At 5:30 AM Daily (On Market Working day)")
-    st.title("Stock Signals")
+    st.title("Stock Signals For Swing Trades")
 
     # NIFTY 200 Stocks List
     symbols = [
