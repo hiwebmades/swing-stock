@@ -52,7 +52,7 @@ def check_signal(data):
     if last_price <= lower_band.iloc[-1] * 1.03:
         return 'Long', 'green'
 
-    if last_price >= sma_20 * 1.01 and last_price < sma_20 * 1.05:
+    if last_price >= sma_20 and last_price < sma_20 * 1.025:
         return 'Long', 'green'
 
     upper_band_price = upper_band.iloc[-1]
