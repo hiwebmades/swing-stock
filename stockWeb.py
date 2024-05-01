@@ -69,6 +69,7 @@ def display_data(symbol, data, signal, color):
 
 # Main function
 def main():
+    st.warning("🚨 Get Latest Updated Signals At 5:30 AM Daily (On Market Working day)")
     st.title("Stock Signals")
 
     # NIFTY 200 Stocks List
@@ -136,7 +137,8 @@ def main():
     st.write(filtered_df)
 
     # Text input for user input
-    user_input = st.text_input("Enter a stock symbol (e.g., TCS.NS):")
+    user_input = st.text_input("**🚀 Enter any stock symbol to search (e.g., TCS.NS):**")
+
 
     if user_input:
         data = get_data(user_input)
